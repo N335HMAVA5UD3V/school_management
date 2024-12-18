@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
+        header { background-color: #333; color: #fff; padding: 10px; text-align: center; }
+        nav { background-color: #444; color: #fff; padding: 10px; text-align: center; }
+        nav a { color: #fff; text-decoration: none; margin: 0 15px; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        main { padding: 20px; }
+        section { margin-bottom: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #333; color: white; }
+        footer { background-color: #333; color: #fff; text-align: center; padding: 10px; position: fixed; bottom: 0; width: 100%; }
+        .summary { display: flex; justify-content: space-around; margin-bottom: 30px; }
+        .summary div { background-color: #eee; padding: 10px 20px; border-radius: 5px; text-align: center; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Admin Dashboard</h1>
+    </header>
+
+    <nav>
+        <a href="{% url 'add_student' %}">Add Student</a>
+        <a href="{% url 'manage_staff' %}">Manage Staff</a>
+        <a href="{% url 'manage_librarian' %}">Manage Librarians</a>
+        <a href="{% url 'fees_history' %}">Fees History</a>
+        <a href= "{% url 'library_history %'}">Library History</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        
+    </nav>
+
+    <main>
+        <h2>Overview</h2>
+        <div class="summary">
+            <div>
+                <h3>Staff</h3>
+                <p>{{ staff_count }}</p>
+            </div>
+            <div>
+                <h3>Librarians</h3>
+                <p>{{ librarian_count }}</p>
+            </div>
+            <div>
+                <h3>Students</h3>
+                <p>{{ student_count }}</p>
+            </div>
+        </div>
+
+        <!-- Staff Section -->
+        <section>
+            <h3>Staff Members (Total: {{ staff_count }})</h3>
+            {% if staff_members %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for staff in staff_members %}
+                            <tr>
+                                <td>{{ staff.full_name }}</td>
+                                <td>{{ staff.email }}</td>
+                                <td>{{ staff.address }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No staff records found.</p>
+            {% endif %}
+        </section>
+
+        <!-- Librarian Section -->
+        <section>
+            <h3>Librarians (Total: {{ librarian_count }})</h3>
+            {% if librarians %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for librarian in librarians %}
+                            <tr>
+                                <td>{{ librarian.full_name }}</td>
+                                <td>{{ librarian.email }}</td>
+                                <td>{{ librarian.address }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No librarian records found.</p>
+            {% endif %}
+        </section>
+
+        <section>
+            <h3>Students (Total: {{ student_count }})</h3>
+            {% if students %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Class</th>
+                            <th>Date of Birth</th>
+                            <th>Guardian Name</th>
+                            <th>Contact Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.first_name }}</td>
+                                <td>{{ student.last_name }}</td>
+                                <td>{{ student.class_name }}</td>
+                                <td>{{ student.date_of_birth }}</td>
+                                <td>{{ student.guardian_name }}</td>
+                                <td>{{ student.contact_number }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No student records found.</p>
+            {% endif %}
+        </section>
+    
+    </main>
+
+
+    <footer>
+        <p>&copy; 2024 School Management System</p>
+    </footer>
+</body>
+</html>

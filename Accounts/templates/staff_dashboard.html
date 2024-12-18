@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+        header { background-color: #007BFF; color: #fff; padding: 10px; text-align: center; }
+        nav { background-color: #0056b3; color: #fff; padding: 10px; }
+        nav a { color: #fff; text-decoration: none; margin-right: 15px; }
+        main { padding: 20px; }
+        footer { background-color: #007BFF; color: #fff; text-align: center; padding: 10px; position: fixed; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Staff Dashboard</h1>
+    </header>
+
+    <nav>
+        <a href="{% url 'add_student' %}">Manage Students</a>
+        <a href="{% url 'fees_history_list' %}">Manage Fees</a>
+        <a href="#">View Library Reviews</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <main>
+        <h2>Staff Panel</h2>
+        <p>Use this dashboard to manage students and fees history.</p>
+        <ul>
+            <li>View and manage <strong>student details</strong>.</li>
+            <li>Manage and update <strong>fees history</strong>.</li>
+            <li>View <strong>library reviews</strong> and reports.</li>
+        </ul>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 School Management System</p>
+    </footer>
+</body>
+</html>

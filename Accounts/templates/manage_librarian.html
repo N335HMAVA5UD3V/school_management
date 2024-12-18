@@ -1,0 +1,13 @@
+<h1>Manage Librarians</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Librarian</button>
+</form>
+
+<h2>Existing Librarians</h2>
+<ul>
+    {% for librarian in librarians %}
+        <li>{{ librarian.full_name }} ({{ librarian.email }})</li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Staff</title>
+    <style>
+        /* Your styles here */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Manage Staff</h1>
+    </header>
+
+    <nav>
+        <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <main>
+        <h2>Existing Staffs</h2>
+        
+        {% if staff_members %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff in staff_members %}
+                        <tr>
+                            <td>{{ staff.username }}</td>
+                            <td>{{ staff.email }}</td>
+                            <td>{{ staff.first_name }}</td>
+                            <td>{{ staff.last_name }}</td>
+                            <td>
+                                <a href="{% url 'edit_staff' staff.id %}">Edit</a> | 
+                                <a href="{% url 'delete_staff' staff.id %}">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No staff members found.</p>
+        {% endif %}
+
+        <h3>Add New Staff</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Staff</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 School Management System</p>
+    </footer>
+</body>
+</html>

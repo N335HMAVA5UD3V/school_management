@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Staff</title>
+</head>
+<body>
+    <header>
+        <h1>Delete Staff: {{ user.username }}</h1>
+    </header>
+
+    <nav>
+        <a href="{% url 'manage_staff' %}">Back to Manage Staff</a>
+    </nav>
+
+    <main>
+        <p>Are you sure you want to delete {{ user.username }}?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Yes, Delete</button>
+        </form>
+    </main>
+</body>
+</html>

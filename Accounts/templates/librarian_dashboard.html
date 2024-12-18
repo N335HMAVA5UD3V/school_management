@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f2f2f2; margin: 0; padding: 0; }
+        header { background-color: #28A745; color: #fff; padding: 10px; text-align: center; }
+        nav { background-color: #218838; color: #fff; padding: 10px; }
+        nav a { color: #fff; text-decoration: none; margin-right: 15px; }
+        main { padding: 20px; }
+        footer { background-color: #28A745; color: #fff; text-align: center; padding: 10px; position: fixed; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Librarian Dashboard</h1>
+    </header>
+
+    <nav>
+        <a href="#">View Library History</a>
+        <a href="#">Manage Borrowing Records</a>
+        <a href="#">View Student Details</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <main>
+        <h2>Librarian Panel</h2>
+        <p>Use this dashboard to view and manage library-related activities.</p>
+        <ul>
+            <li>Access <strong>library history</strong> for all students.</li>
+            <li>Update <strong>borrowing records</strong> and due dates.</li>
+            <li>View <strong>student details</strong> for better management.</li>
+        </ul>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 School Management System</p>
+    </footer>
+</body>
+</html>
