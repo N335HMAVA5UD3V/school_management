@@ -1,12 +1,12 @@
 from django.urls import path, include
-from .views import UserViewSet, LibraryHistoryViewSet, custom_logout
+from .views import UserViewSet, custom_logout
 from . import views
 from rest_framework.routers import DefaultRouter
 from django.contrib.auth import views as auth_views
 
-router = DefaultRouter()
-router.register(r'users', UserViewSet, basename='user')  # Register UserViewSet
-router.register(r'library_history', LibraryHistoryViewSet, basename='libraryhistory')  # Register LibraryHistoryViewSet
+# router = DefaultRouter()
+# router.register(r'users', UserViewSet, basename='user')  # Register UserViewSet
+# router.register(r'library_history', LibraryHistoryViewSet, basename='libraryhistory')  # Register LibraryHistoryViewSet
 
 urlpatterns = [
     # Authentication
@@ -20,7 +20,8 @@ urlpatterns = [
 
     path('add-student/', views.student_list, name='add_student'),
     path('fees_history/', views.fees_history_list, name='fees_history'),
-    
+    path('library_history/', views.library_history_api, name='library_history'),
+
     # Manage staff
     path("manage-staff/", views.manage_staff, name="manage_staff"),
     path('edit_staff/<int:user_id>/', views.edit_staff, name='edit_staff'),
@@ -31,7 +32,7 @@ urlpatterns = [
     path('edit_librarian/<int:user_id>/', views.edit_librarian, name='edit_librarian'),
     path('delete_librarian/<int:user_id>/', views.delete_librarian, name='delete_librarian'),
     
-    path('api/', include(router.urls)),
+    #path('api/', include(router.urls)),
 ]
 # # Include router-generated URLs
 # urlpatterns += router.urls

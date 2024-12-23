@@ -233,23 +233,33 @@ def fees_history_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET', 'POST'])
+@login_required
+@role_required(allowed_roles=['LIBRARIAN', 'ADMIN'])
+def library_history_api(request):
+    # For 'GET' request: Retrieve library history
+    if request.method == 'GET':
+        # Check user role for permission
+        if request.user.role not in ['LIBRARIAN', 'ADMIN', 'STAFF']:
+            raise PermissionDenied("You do not have permission to view library history.")
+        
+        library_history = LibraryHistory.objects.all()
+        serializer = LibraryHistorySerializer(library_history, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-# Library History API ViewSet
-class LibraryHistoryViewSet(viewsets.ModelViewSet):
-    queryset = LibraryHistory.objects.all()
-    serializer_class = LibraryHistorySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        # Librarians and staff can view library history
-        if self.request.user.role in ['LIBRARIAN', 'STAFF']:
-            return LibraryHistory.objects.all()
-        raise PermissionDenied("You do not have permission to view library history.")
-
-    def perform_create(self, serializer):
-        if self.request.user.role != 'ADMIN':
+    # For 'POST' request: Add a new library history record
+    elif request.method == 'POST':
+        # Check user role for permission
+        if request.user.role != 'ADMIN':
             raise PermissionDenied("Only Admins can add library records.")
-        serializer.save()
+        
+        serializer = LibraryHistorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Custom Logout Function
 def custom_logout(request):
