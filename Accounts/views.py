@@ -9,12 +9,31 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .decorators import role_required
 from django.contrib import messages
-from .forms import UserForm
+from .forms import UserRegistrationForm
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import Group
+
+@login_required
+def register_user(request):
+    # Only allow admins to access this view
+    if request.user.role != 'ADMIN':
+        messages.error(request, "You are not authorized to register users.")
+        return redirect('admin_dashboard')
+
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User created successfully!")
+            return redirect('admin_dashboard')  # Redirect back to the dashboard
+    else:
+        form = UserRegistrationForm()
+
+    return render(request, 'register_user.html', {'form': form})
 
 # Login and Redirection based on Role
 @login_required
-@role_required(allowed_roles=['admin', 'staff', 'librarian'])
+@role_required(allowed_roles=['ADMIN', 'STAFF', 'LIBRARIAN'])
 def dashboard(request):
     if request.user.role == 'ADMIN':
         return redirect('admin_dashboard')
@@ -24,16 +43,16 @@ def dashboard(request):
         return redirect('librarian_dashboard')
     return redirect('login')
 
-# Custom Login Function
 def custom_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)
-            # Redirect user based on their role
+            login(request, user)          
+
+            # Redirect based on role
             if user.role == 'ADMIN':
                 return redirect('admin_dashboard')
             elif user.role == 'STAFF':
@@ -41,8 +60,10 @@ def custom_login(request):
             elif user.role == 'LIBRARIAN':
                 return redirect('librarian_dashboard')
             else:
-                return redirect('login')  # Default to login if no role
+                messages.error(request, "Your role is not defined.")
+                return redirect('login')  # Redirect back to login if no valid role
         else:
+            messages.error(request, "Invalid username or password.")
             return render(request, 'login.html', {'error': 'Invalid credentials'})
 
     return render(request, 'login.html')
@@ -79,7 +100,7 @@ def admin_dashboard(request):
 @role_required(allowed_roles=['ADMIN'])
 def manage_staff(request):
     if request.method == "POST":
-        form = UserForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.role = "STAFF"
@@ -87,7 +108,7 @@ def manage_staff(request):
             messages.success(request, "Staff member added successfully!")
             return redirect("manage_staff")
     else:
-        form = UserForm()
+        form = UserRegistrationForm()
 
     # Fetch existing staff from the database
     staff_members = User.objects.filter(role='STAFF')
@@ -100,13 +121,13 @@ def edit_staff(request, user_id):
     user = get_object_or_404(User, id=user_id)
     
     if request.method == "POST":
-        form = UserForm(request.POST, instance=user)
+        form = UserRegistrationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             messages.success(request, "Staff member updated successfully!")
             return redirect("manage_staff")
     else:
-        form = UserForm(instance=user)
+        form = UserRegistrationForm(instance=user)
     
     return render(request, "edit_staff.html", {"form": form, "user": user})
 
@@ -128,7 +149,7 @@ def delete_staff(request, user_id):
 @role_required(allowed_roles=['ADMIN'])
 def manage_librarian(request):
     if request.method == "POST":
-        form = UserForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.role = "LIBRARIAN"
@@ -136,7 +157,7 @@ def manage_librarian(request):
             messages.success(request, "Librarian added successfully!")
             return redirect("manage_librarian")
     else:
-        form = UserForm()
+        form = UserRegistrationForm()
     
     librarians = User.objects.filter(role='LIBRARIAN')
     return render(request, "manage_librarian.html", {"form": form, "librarians": librarians})
@@ -148,13 +169,13 @@ def edit_librarian(request, user_id):
     user = get_object_or_404(User, id=user_id)
     
     if request.method == "POST":
-        form = UserForm(request.POST, instance=user)
+        form = UserRegistrationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             messages.success(request, "Librarian updated successfully!")
             return redirect("manage_librarian")
     else:
-        form = UserForm(instance=user)
+        form = UserRegistrationForm(instance=user)
     
     return render(request, "edit_librarian.html", {"form": form, "user": user})
 
@@ -265,3 +286,4 @@ def library_history_api(request):
 def custom_logout(request):
     logout(request)
     return redirect('login')  # Redirect to the login page
+

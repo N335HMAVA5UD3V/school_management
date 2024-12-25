@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import UserViewSet, custom_logout
+from .views import custom_logout, register_user
 from . import views
 from rest_framework.routers import DefaultRouter
 from django.contrib.auth import views as auth_views
@@ -10,6 +10,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Authentication
+    path('register/', register_user, name='register_user'),
     path('login/', views.custom_login, name='login'),
     path('logout/', custom_logout, name='logout'),
 

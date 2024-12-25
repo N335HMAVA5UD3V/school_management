@@ -1,34 +1,48 @@
 from django import forms
-from .models import User
-from django.contrib import messages
+from .models import User,FeesHistory
 
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'}),
+        label="Password",
+        required=False  # Make password optional for editing users
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}),
+        label="Confirm Password",
+        required=False  # Make confirm password optional for editing users
+    )
 
-
-class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["full_name", "email", "role", "address", "district", "state", "pin_code", "is_active","password","username"]
-        labels = {
-            "full_name": "Full Name",
-            "email": "Email Address",
-            "username": "Username",
-            "password": 'Password',
-            "role": "User Role",
-            "address": "Residential Address",
-            "district": "District",
-            "state": "State",
-            "pin_code": "Postal Code",
-            "is_active": "Active Status",
-        }
+        fields = ['username', 'email', 'role', 'password']  # Include fields you want to display
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        # Password matching validation only for new users (not when editing)
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError("Passwords do not match.")
+        
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        
+        # If a new password is provided, hash it and set it
+        if self.cleaned_data['password']:
+            user.set_password(self.cleaned_data['password'])  # Hash the password
+        
+        if commit:
+            user.save()
+        return user
+
+class FeesHistoryForm(forms.ModelForm):
+    class Meta:
+        model = FeesHistory
+        fields = ['student', 'fee_type', 'amount_paid', 'payment_date']  # Add any other fields as needed
         widgets = {
-            "email": forms.EmailInput(attrs={"placeholder": "Enter a valid email address", "class": "form-control"}),
-            "pin_code": forms.TextInput(attrs={"placeholder": "Enter 6-digit PIN", "class": "form-control"}),
-            "role": forms.Select(attrs={"class": "form-control"}),  # Dropdown for ROLE_CHOICES
+            'payment_date': forms.DateInput(attrs={'type': 'date'}),
         }
-
-    def clean_pin_code(self):
-        pin_code = self.cleaned_data.get("pin_code")
-        if len(pin_code) != 6:
-            raise forms.ValidationError("PIN code must be 6 digits long.")
-        return pin_code
-

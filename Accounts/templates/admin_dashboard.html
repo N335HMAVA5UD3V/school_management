@@ -18,6 +18,8 @@
         footer { background-color: #333; color: #fff; text-align: center; padding: 10px; position: fixed; bottom: 0; width: 100%; }
         .summary { display: flex; justify-content: space-around; margin-bottom: 30px; }
         .summary div { background-color: #eee; padding: 10px 20px; border-radius: 5px; text-align: center; }
+        button { padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
@@ -25,14 +27,18 @@
         <h1>Welcome to the Admin Dashboard</h1>
     </header>
 
+    <!-- Button to register a new user -->
+    <a href="{% url 'register_user' %}">
+        <button type="button">Register New User</button>
+    </a><br><br>
+
     <nav>
         <a href="{% url 'add_student' %}">Add Student</a>
         <a href="{% url 'manage_staff' %}">Manage Staff</a>
         <a href="{% url 'manage_librarian' %}">Manage Librarians</a>
         <a href="{% url 'fees_history' %}">Fees History</a>
-        <a href= "{% url 'library_history' %}">Library History</a>
+        <a href="{% url 'library_history' %}">Library History</a>
         <a href="{% url 'logout' %}">Logout</a>
-        
     </nav>
 
     <main>
@@ -139,7 +145,6 @@
         </section>
     
     </main>
-
 
     <footer>
         <p>&copy; 2024 School Management System</p>
